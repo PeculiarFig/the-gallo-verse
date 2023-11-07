@@ -90,57 +90,29 @@ growrate = 5
 sizeilia = 150
 
 # ------------------
-olivia_timer = 0
-olivia_circle_counter = 0
 
-olivia_circles_list = []
+arm_r_a_rhee = 320
+arm_r_b_rhee = 290
+hand_r_rhee = 305
+hand_r_y_rhee = 270
+arm_r_y_a_rhee = 260
+arm_r_y_b_rhee = 265
+wave_a_rhee = False
+wave_b_rhee = False
+wave_c_rhee = False
+arm_l_a_rhee = 160
+arm_l_b_rhee = 190
+hand_l_rhee = 175
+hand_l_y_rhee = 270
+arm_l_y_a_rhee = 260
+arm_l_y_b_rhee = 265
+arm_far_rhee = False
+eye_a_rhee = 150
+eye_b_rhee = 25
+eye_c_rhee = 163
+eye_d_rhee = 8
+blink_rhee = False
 
-olivia_text = "Aw sweet! Man-made horrors beyond my comprehension!"
-
-olivia_font = pygame.font.SysFont("Arial",20)
-
-for i in range(20,640,40):
-    for j in range(20,480,40):
-        if (i + j) % 80 == 0:
-            olivia_circles_list.append({"x":i,"y":j})
-
-#HUZZAH I DONT NEED TO WORRY ABOUT VARIABLE NAMES THANK GOD FOR LOCAL VARIABLES
-def olivia_draw_circles():
-    for circle in olivia_circles_list:
-        num = (circle["x"] + circle["y"])/20 + olivia_timer
-        r = 255 * abs(math.cos(math.pi*(num/60-1/3)))
-        g = 255 * abs(math.cos(math.pi*(num/60-2/3)))
-        b = 255 * abs(math.cos(math.pi*(num/60-3/3)))
-        
-        circle_x = x+circle["x"]
-        circle_y = y+circle["y"]+math.sin(math.pi*num/20)*8
-        circle_colour = (r,g,b)
-        circle_size = 20
-        # mouse hover doesn't work in galloverse :(
-        '''mouse_x, mouse_y = pygame.mouse.get_pos()       
-        x_distance = abs(circle_x - mouse_x)
-        y_distance = abs(circle_y - mouse_y)
-        
-        if x_distance <= 100 and y_distance <= 100:
-            circle_size += (200 - x_distance - y_distance)/10'''
-        
-        pygame.draw.circle(screen,circle_colour,(circle_x,circle_y),circle_size)
-
-def olivia_generate_text():
-    letters = "aaaaaaaabbcccddddeeeeeeeeeeeefffgghhhhhhiiiiiiiijkllllmmmnnnnnnnnooooooooppqrrrrrrsssssssstttttttttuuuvwwxyyz"
-    symbols = "!?,.:;"
-    string = " "
-    for i in range(15):
-        num = random.randrange(0,25)
-        if num == 24 and string[i-1] not in symbols and string[i-1] != " ":
-            string += symbols[random.randrange(0,len(symbols))] + " "
-        elif num > 15 and string[i-1] != " ":
-            string += " "
-        else:
-            string += letters[random.randrange(0,len(letters))]
-    string += symbols[random.randrange(0,3)]
-    string = string [1:]
-    return(string)
 # ------------------
 
 
@@ -372,46 +344,97 @@ while running:
     pygame.draw.rect(screen, (45, 96, 255), (x, y, width_ilia, height_ilia))
 
     pygame.draw.circle(screen, flash_color, (x + circle_x_ilia, y + circle_y_ilia), sizeilia)
-    #  OLIVIA ------------------
-    x = 3840
-    y = 1440
-    if olivia_timer % 60 == 0:
-        olivia_text = olivia_font.render(olivia_generate_text(),True,"black")
-    olivia_timer += 1
-    pygame.draw.rect(screen,(80,30,70),(x,y,640,480))
-    olivia_draw_circles()
+
+    # ----------------------------------------------------------------------------------------
+
+    if arm_far_rhee is False:
+        if arm_l_a_rhee < 145:
+            arm_far_rhee = True
+        arm_l_a_rhee -= 1
+        arm_l_b_rhee -= 1
+        arm_l_y_a_rhee -= 1
+        arm_l_y_b_rhee -= 1
+        hand_l_rhee -= 1
+        hand_l_y_rhee -= 1
+    elif arm_far_rhee is True:
+        if arm_l_a_rhee > 165:
+            arm_far_rhee = False
+        arm_l_a_rhee += 1
+        arm_l_b_rhee += 1
+        arm_l_y_a_rhee += 1
+        arm_l_y_b_rhee += 1
+        hand_l_rhee += 1
+        hand_l_y_rhee += 1
+
+    if wave_a_rhee is False:
+        if arm_r_y_a_rhee < 149:
+            wave_a_rhee = True
+        if wave_b_rhee is False:
+            arm_r_a_rhee += 1
+            arm_r_b_rhee += 1
+            hand_r_rhee += 1
+        if arm_r_a_rhee > 335:
+            wave_b_rhee = True
+        arm_r_y_a_rhee -= 1
+        arm_r_y_b_rhee -= 1
+        hand_r_y_rhee -= 1
+    elif wave_a_rhee is True:
+        if arm_r_a_rhee < 315:
+            wave_a_rhee = False
+        if arm_r_y_a_rhee > 245:
+            wave_b_rhee = False
+        if wave_b_rhee is False:
+            arm_r_a_rhee -= 1
+            arm_r_b_rhee -= 1
+            hand_r_rhee -= 1
+        arm_r_y_a_rhee += 1
+        arm_r_y_b_rhee += 1
+        hand_r_y_rhee += 1
+
+    if blink_rhee is False:
+        if eye_b_rhee < 10:
+            blink_rhee = True
+        eye_a_rhee += 0.5
+        eye_b_rhee -= 0.5
+        eye_c_rhee += 0.25
+        eye_d_rhee -= 0.25
+    elif blink_rhee is True:
+        if eye_b_rhee > 25:
+            blink_rhee = False
+        eye_a_rhee -= 0.5
+        eye_b_rhee += 0.5
+        eye_c_rhee -= 0.25
+        eye_d_rhee += 0.25
+
+    x = 2560
+    y = 2400
+    width = 640
+    height = 480
+
+    pygame.draw.rect(screen, (142, 84, 176), (x, y, width, height))
+    pygame.draw.rect(screen, (142, 84, 176), (x, y, width, height))
+    pygame.draw.polygon(screen, (42, 97, 60), [(x, y + 480), (x, y + 325), (x + 640, y + 325), (x + 640, y + 480)])
+    pygame.draw.circle(screen, (245, 250, 182), (x + 400, y + 80), 60)
+    pygame.draw.circle(screen, (142, 84, 176), (x + 420, y + 60), 40)
+    pygame.draw.polygon(screen, (64, 64, 59), [(x + 200, y + 350), (x + 205, y + 290), (x + 275, y + 290), (x + 280, y + 350), (x + 250, y + 350), (x + 240, y + 280), (x + 230, y + 350)])
+    pygame.draw.polygon(screen, (46, 46, 41), [(x + 197, y + 340), (x + 196, y + 355), (x + 191, y + 365), (x + 230, y + 365), (x + 232, y + 340)])
+    pygame.draw.polygon(screen, (46, 46, 41), [(x + 283, y + 340), (x + 284, y + 355), (x + 289, y + 365), (x + 250, y + 365), (x + 248, y + 340)])
+    pygame.draw.polygon(screen, (79, 79, 70), [(x + 200, y + 300), (x + 205, y + 190), (x + 275, y + 190), (x + 280, y + 300)])
+    pygame.draw.circle(screen, (64, 64, 59), (x + hand_l_rhee, y + hand_l_y_rhee), 15)
+    pygame.draw.circle(screen, (64, 64, 59), (x + hand_r_rhee, y + hand_r_y_rhee), 15)
+    pygame.draw.polygon(screen, (79, 79, 70), [(x + arm_l_a_rhee, y + arm_l_y_a_rhee), (x + 176, y + 206), (x + 202, y + 221), (x + 203, y + 218), (x + arm_l_b_rhee, y + arm_l_y_b_rhee)])
+    pygame.draw.polygon(screen, (79, 79, 70), [(x + arm_r_a_rhee, y + arm_r_y_a_rhee), (x + 304, y + 206), (x + 278, y + 221), (x + 277, y + 218), (x + arm_r_b_rhee, y + arm_r_y_b_rhee)])
+    pygame.draw.polygon(screen, (112, 112, 95), [(x + 240, y + 265), (x + 215, y + 195), (x + 265, y + 195)])
+    pygame.draw.polygon(screen, (99, 99, 90), [(x + 240, y + 265), (x + 225, y + 220), (x + 210, y + 230)])
+    pygame.draw.polygon(screen, (99, 99, 90), [(x + 240, y + 265), (x + 255, y + 220), (x + 270, y + 230)])
+    pygame.draw.polygon(screen, (46, 46, 41), [(x + 175, y + 195), (x + 210, y + 190), (x + 270, y + 190), (x + 305, y + 195), (x + 306, y + 205), (x + 270, y + 225), (x + 250, y + 225), (x + 240, y + 190), (x + 230, y + 225), (x + 210, y + 225), (x + 174, y + 205)])
+    pygame.draw.polygon(screen, (64, 64, 59), [(x+215,y+190), (x+205,y+170), (x+210,y+140), (x+225,y+130), (x+255,y+130), (x+270,y+140), (x+275,y+170), (x+265,y+190)])
+    pygame.draw.ellipse(screen, (245, 245, 54), [(x + 217, y + eye_a_rhee), (20, eye_b_rhee)])
+    pygame.draw.ellipse(screen, (245, 245, 54), [(x + 243, y + eye_a_rhee), (20, eye_b_rhee)])
+    pygame.draw.ellipse(screen, (255, 255, 207), [(x + 222, y + eye_c_rhee), (12, eye_d_rhee)])
+    pygame.draw.ellipse(screen, (255, 255, 207), [(x + 244, y + eye_c_rhee), (12, eye_d_rhee)])
+    pygame.draw.polygon(screen, (46, 46, 41), [(x + 226, y + 185), (x + 232, y + 170), (x + 240, y + 165), (x + 248, y + 170), (x + 254, y + 185), (x + 240, y + 188)])
     
-    olivia_cat_x = 5*(abs(100-olivia_timer/2%200))+x-75
-    olivia_cat_y = -50*(abs(math.sin(olivia_timer/10)))+y
-    #text
-    pygame.draw.ellipse(screen,"black",(olivia_cat_x+50,y+150,180,120))
-    pygame.draw.polygon(screen,"black",((olivia_cat_x+125,y+263),(olivia_cat_x+155,y+263),(olivia_cat_x+140,olivia_cat_y*0.5+y*0.5+330)))
-    pygame.draw.ellipse(screen,"white",(olivia_cat_x+54,y+154,172,112))
-    pygame.draw.polygon(screen,"white",((olivia_cat_x+130,y+260),(olivia_cat_x+150,y+260),(olivia_cat_x+140,olivia_cat_y*0.5+y*0.5+320)))
-    screen.blit(olivia_text,(olivia_cat_x+70,y+195))
-    
-    #body
-    pygame.draw.ellipse(screen,"black",(olivia_cat_x+96,olivia_cat_y+351,88,78))
-    pygame.draw.polygon(screen,"black",((olivia_cat_x+104,olivia_cat_y+340),(olivia_cat_x+101,olivia_cat_y+377),(olivia_cat_x+131,olivia_cat_y+360)))
-    pygame.draw.polygon(screen,"black",((olivia_cat_x+175,olivia_cat_y+340),(olivia_cat_x+178,olivia_cat_y+377),(olivia_cat_x+148,olivia_cat_y+360)))
-    pygame.draw.ellipse(screen,"white",(olivia_cat_x+100,olivia_cat_y+355,80,70))
-    pygame.draw.polygon(screen,"white",((olivia_cat_x+106,olivia_cat_y+345),(olivia_cat_x+106,olivia_cat_y+370),(olivia_cat_x+126,olivia_cat_y+360)))
-    pygame.draw.polygon(screen,"white",((olivia_cat_x+173,olivia_cat_y+345),(olivia_cat_x+173,olivia_cat_y+370),(olivia_cat_x+153,olivia_cat_y+360)))
-    #mouth
-    if 100-olivia_timer/2%200 > 0:
-        olivia_cat_x -= 5
-    else:
-        olivia_cat_x += 5
-    pygame.draw.ellipse(screen,"black",(olivia_cat_x+127,olivia_cat_y+378,26,39))
-    pygame.draw.ellipse(screen,"white",(olivia_cat_x+130,olivia_cat_y+381,20,33))
-    pygame.draw.ellipse(screen,"black",(olivia_cat_x+122,olivia_cat_y+378,20,20))
-    pygame.draw.ellipse(screen,"black",(olivia_cat_x+138,olivia_cat_y+378,20,20))
-    pygame.draw.ellipse(screen,"white",(olivia_cat_x+119,olivia_cat_y+376,23,19))
-    pygame.draw.ellipse(screen,"white",(olivia_cat_x+138,olivia_cat_y+376,23,19))
-    pygame.draw.rect(screen,"white",(olivia_cat_x+120,olivia_cat_y+370,40,20))
-    #eyes
-    pygame.draw.ellipse(screen,"black",(olivia_cat_x+123,olivia_cat_y+380,6,8))
-    pygame.draw.ellipse(screen,"black",(olivia_cat_x+151,olivia_cat_y+380,6,8))
     # ----------------------------------------------------------------------------------------
 
     # Must have these coordinates
